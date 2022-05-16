@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private int _balance = 0;
 
     public event UnityAction ChangingLives;
-    public event UnityAction TakePoints;
+    public event UnityAction GotPoints;
     public event UnityAction GameOver;
 
     public int HealthPlayer => _health;
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     public void GetPoints(int points)
     {
         _balance += points;
-        TakePoints?.Invoke();
+        GotPoints?.Invoke();
     }
 
     public void DeadPlayer()
