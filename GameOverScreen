@@ -1,0 +1,34 @@
+using DG.Tweening;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
+public class GameOverScreen : Screen
+{
+    public event UnityAction RestartButtonClick;
+    [SerializeField] private Text _textGameOver;
+    private const string _textGameOverText = "Game Over";
+
+    public override void Close()
+    {
+        _canvasGroup.alpha = 0;
+        _button.interactable = false;
+    }
+
+    protected override void OnButtonClick()
+    {
+        RestartButtonClick.Invoke();
+        TextAnimation();
+    }
+
+    public override void Open()
+    {
+        _canvasGroup.alpha = 1;
+        _button.interactable = true;
+    }
+
+    private void TextAnimation()
+    {
+        _textGameOver.DOText(_textGameOverText, 2, true, ScrambleMode.All);
+    }
+}
