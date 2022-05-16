@@ -1,0 +1,74 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Animator))]
+
+public class Enemy : MonoBehaviour
+{
+    private Player _targetPlayer;
+    private Animator _animator;
+    private Rigidbody _enemyRB;
+
+    private int _damage = 15;
+    private float _speed = 5;
+    private int  _points = 10;
+    private bool _dead = false;
+    private const string Dead = "Dead";
+
+    private void Awake()
+    {
+        _targetPlayer = GetComponent<Player>();
+        _enemyRB = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
+    }
+
+    public void Instatiate(Player player)
+    {
+        _targetPlayer = player;
+    }
+
+    private void Update()
+    {
+        LookToPlayer();
+        MoveToPlayer();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent(out Laser laser))
+        {
+            _dead = true;
+            _targetPlayer.GetPoints(_points);
+        }
+
+        if (collision.TryGetComponent(out Player player))
+        {
+            player.TakeDamage(_damage);
+            transform.Translate(Vector2.zero * _speed * Time.deltaTime);
+            _dead = true;
+        }
+    }
+
+    private void DeadEnemy()
+    {
+        Destroy(gameObject);
+    }
+
+    private void LookToPlayer()
+    {
+        Vector3 moveDirection = _targetPlayer.transform.position - transform.position;
+        float angle = Mathf.Atan2(-moveDirection.x, moveDirection.y) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
+    private void MoveToPlayer()
+    {
+        if (_dead != true)
+        {
+            transform.Translate(Vector2.up * _speed * Time.deltaTime);
+        }
+        else
+        {
+            _animator.Play(Dead);
+        }
+    }
+}
