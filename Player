@@ -1,0 +1,81 @@
+using UnityEngine;
+using UnityEngine.Events;
+
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(Rigidbody))]
+
+public class Player : MonoBehaviour
+{
+    [SerializeField] private float _speed;
+    [SerializeField] private Laser _laser;
+    [SerializeField] private Vector3 _startPosition;
+
+    private Rigidbody2D _rigidbody;
+    private AudioSource _audioSource;
+    private Vector3 _direction;
+
+    private int _health = 100;
+    private int _maxHealth = 100;
+    private int _balance = 0;
+
+    public event UnityAction ChangingLives;
+    public event UnityAction TakePoints;
+    public event UnityAction GameOver;
+
+    public int HealthPlayer => _health;
+    public int BalancePlayer => _balance;
+    public int MaxHealthPlayer => _maxHealth;
+
+    public Vector3 Position => transform.position;
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _audioSource.Stop();
+    }
+
+    private void Update()
+    {
+        Move();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shoot();
+        }
+    }
+
+    private void Move()
+    {
+        _direction = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
+        _rigidbody.AddForce(_direction * _speed * Time.deltaTime, ForceMode2D.Force);
+    }
+
+    private void Shoot()
+    {
+        Instantiate(_laser, transform.position, transform.rotation);
+        _audioSource.Play();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        _health -= damage;
+        ChangingLives?.Invoke();
+        DeadPlayer();
+    }
+
+    public void GetPoints(int points)
+    {
+        _balance += points;
+        TakePoints?.Invoke();
+    }
+
+    public void DeadPlayer()
+    {
+        if (_health <= 0)
+        {
+            _audioSource.Stop();
+            GameOver?.Invoke();
+        }
+    }
+}
