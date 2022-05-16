@@ -1,0 +1,23 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class CounterPoints : MonoBehaviour
+{
+    [SerializeField] private Player _player;
+    [SerializeField] private Text _text;
+
+    private void OnEnable()
+    {
+       _player.TakePoints += UpdateCountText;
+    }
+
+    private void Awake()
+    {
+        _text = GetComponent<Text>();
+    }
+
+    private void UpdateCountText()
+    {
+      _text.text = "" + _player.BalancePlayer;
+    }
+}
