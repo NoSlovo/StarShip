@@ -8,7 +8,7 @@ public class Game : MonoBehaviour
     [SerializeField] private GameOverScreen _gameOverScreen;
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] private GameObject _component;
- 
+
     private void OnEnable()
     {
         _startScreen.PlayButtonClick += OnPlayButtonClick;
@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
 
 
     public void OnPlayButtonClick()
-    {
+    { 
         _startScreen.Close();
         StartGame();
         _audioSource.Play();
@@ -42,7 +42,7 @@ public class Game : MonoBehaviour
         _gameOverScreen.Close();
         StartGame();
         _audioSource.Play();
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene(0);
     }
 
     private void StartGame()
