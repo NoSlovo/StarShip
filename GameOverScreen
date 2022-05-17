@@ -3,10 +3,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Text))]
+
 public class GameOverScreen : Screen
 {
     public event UnityAction RestartButtonClick;
     [SerializeField] private Text _textGameOver;
+
     private const string _textGameOverText = "Game Over";
 
     public override void Close()
@@ -15,9 +18,14 @@ public class GameOverScreen : Screen
         _button.interactable = false;
     }
 
+    public void Awake()
+    {
+        _textGameOver = GetComponent<Text>();
+    }
+
     protected override void OnButtonClick()
     {
-        RestartButtonClick.Invoke();
+        RestartButtonClick?.Invoke();
         TextAnimation();
     }
 
